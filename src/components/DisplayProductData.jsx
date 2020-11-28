@@ -1,23 +1,48 @@
+import axios from "axios";
 import React, { Component } from "react";
-import { Button } from "semantic-ui-react";
+// import { Button } from "semantic-ui-react";
+import { getData } from "../modules/productData";
 
 class DisplayProductData extends Component {
-  // state = {
-  // 	productData: [],
-  // };
+  state = {
+  	productData: []
+  };
+
+  componentDidMount() {
+    this.getProductData()
+  }
+
+  async getProductData() {
+    let result = await getData()
+    this.setState({ productData: result.data.products })
+  }
+
+  async addToOrder(event) {
+    let productID = parseInt(event.target.dataset.product)
+    let headers = JSON.parse(localStorage.getItem('credentials'))
+    let response = await axios.post(
+      "http://localhost:3000/order", 
+      { product_id: productID },
+      { headers: headers }
+    )
+  }
 
   render() {
     let dataIndex;
-    const data = this.props.productData;
-    if (Array.isArray(data) && data) {
+    if (Array.isArray(this.state.productData) && this.state.productData.length) {
       dataIndex = (
         <div id="index">
-          {data.map((item) => {
+          {this.state.productData.map((item) => {
             return (
-              <div key={item.id} data-cy={`product-${item.id}`}>
+              <div key={item.id} data-cy={`product-${item.id}`} id={`product-${item.id}`}>
                 {item.name},{item.description},{item.price}
-                {localStorage.getItem("authenticated") === "true" && (
-                 <button>Add to Order</button>
+                { localStorage.getItem("authenticated") === "true" && (
+                  <button
+                    data-product={item.id}
+                    onClick={(event) => this.addToOrder(event)}
+                  >
+                    Add to Order
+                  </button>
                 )}
               </div>
             );

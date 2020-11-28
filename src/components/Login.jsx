@@ -33,9 +33,9 @@ class Login extends Component {
     return (
       <>
         {this.state.renderRegistrationForm ? (
-          <form onSubmit={(event) => this.authenticate(event)}>
-            <input type="text" name="email" data-cy="email" />
-            <input type="password" name="password" data-cy="password" />
+          <form onSubmit={(event) => this.authenticate(event)} >
+            <input type="text" name="email" data-cy="email"/>
+            <input type="password" name="password" data-cy="password"/>
             <input
               type="password"
               name="password_confirmation"
